@@ -1,22 +1,25 @@
-{% set name = "raydar" %}
-{% set version = "0.2.4" %}
+schema_version: 1
+
+context:
+  name: raydar
+  version: "0.2.4"
 
 package:
-  name: {{ name|lower }}
-  version: {{ version }}
+  name: ${{ name|lower }}
+  version: ${{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz
   sha256: 2b63151e79c718c3e20ab6909d781e7097cb4f7a295094fb22205dcacd9742db
 
 build:
-  number: 1
+  number: 2
   noarch: python
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   host:
-    - python {{ python_min }}
+    - python ${{ python_min }}
     - pip
     - nodejs
     - yarn
@@ -24,7 +27,7 @@ requirements:
     - hatch-jupyter-builder
     - jupyterlab >=4,<5
   run:
-    - python >={{ python_min }}
+    - python >=${{ python_min }}
     - coolname
     - fastapi
     - packaging
@@ -35,25 +38,25 @@ requirements:
     - ray-serve >=2.8
     - starlette
 
-test:
-  requires:
-    - python {{ python_min }}
-  imports:
-    - raydar
-  # TODO reenable after perspective changes
-  # requires:
-  #   - pip
-  # commands:
-  #   - pip check
+tests:
+  - python:
+      imports:
+        - raydar
+      pip_check: false
+      python_version:
+        - ${{ python_min }}
+        - "*"
+  - requirements:
+      run:
+        - python ${{ python_min }}
 
 about:
-  home: http://github.com/point72/raydar
   license: Apache-2.0
-  license_family: Apache
   license_file: LICENSE
   summary: A perspective powered, user editable ray dashboard via ray serve
   description: A perspective powered, user editable ray dashboard via ray serve
-  dev_url: https://github.com/point72/raydar
+  homepage: http://github.com/point72/raydar
+  repository: https://github.com/point72/raydar
 
 extra:
   recipe-maintainers:
